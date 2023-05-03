@@ -1,6 +1,8 @@
 import 'dart:io';
 import 'package:kissan_pay/pages/screens.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
 
 class Login extends StatefulWidget {
   const Login({Key key}) : super(key: key);
@@ -17,6 +19,41 @@ class _LoginState extends State<Login> {
   bool confirmPsw = true;
   DateTime currentBackPressTime;
 
+  final emailcontroller = TextEditingController();
+  final passwordcontroller = TextEditingController();
+
+
+  FirebaseAuth auth = FirebaseAuth.instance;
+
+
+  void signup()
+  {
+    auth.createUserWithEmailAndPassword(email: emailcontroller.text.toString(),
+        password: passwordcontroller.text.toString()).then((value){
+        Navigator.push(
+        context,
+        PageTransition(
+          child: const Verification(),
+          type: PageTransitionType.rightToLeft,
+        ),
+      );
+    });
+  }
+
+  void login()
+  {
+    auth.signInWithEmailAndPassword(
+        email: emailcontroller.text,
+        password: passwordcontroller.text.toString()).then((value){
+        Navigator.push(
+        context,
+        PageTransition(
+          child: const Verification(),
+          type: PageTransitionType.rightToLeft,
+        ),
+      );
+    });
+  }
   @override
   Widget build(BuildContext context) {
     height = MediaQuery.of(context).size.height;
@@ -30,6 +67,7 @@ class _LoginState extends State<Login> {
         return false;
       },
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         backgroundColor: orangeColor,
         body: SizedBox(
           height: height,
@@ -244,7 +282,9 @@ class _LoginState extends State<Login> {
         ],
       ),
       child: TextField(
-        keyboardType: TextInputType.phone,
+        controller: emailcontroller,
+        keyboardType: TextInputType.emailAddress,
+       // keyboardType: TextInputType.phone,
         cursorColor: primaryColor,
         style: black18SemiBoldTextStyle,
         decoration: InputDecoration(
@@ -253,7 +293,8 @@ class _LoginState extends State<Login> {
             color: greyColor,
             size: 20,
           ),
-          hintText: 'Mobile Number',
+          //hintText: 'Mobile Number',
+          hintText: 'Email Address',
           hintStyle: grey18SemiBoldTextStyle,
           border: const UnderlineInputBorder(borderSide: BorderSide.none),
         ),
@@ -278,6 +319,7 @@ class _LoginState extends State<Login> {
             ],
           ),
           child: TextField(
+            controller: passwordcontroller,
             obscureText: password,
             cursorColor: primaryColor,
             style: black18SemiBoldTextStyle,
@@ -319,14 +361,15 @@ class _LoginState extends State<Login> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         InkWell(
-          borderRadius: BorderRadius.circular(5.0),
-          onTap: () => Navigator.push(
-            context,
-            PageTransition(
-              child: const Verification(),
-              type: PageTransitionType.rightToLeft,
-            ),
-          ),
+           borderRadius: BorderRadius.circular(5.0),
+          // onTap: () => Navigator.push(
+          //   context,
+          //   PageTransition(
+          //     child: const Verification(),
+          //     type: PageTransitionType.rightToLeft,
+          //   ),
+          // ),
+          onTap: () => login(),
           child: Container(
             width: MediaQuery.of(context).size.width - 120,
             padding: const EdgeInsets.all(fixPadding * 1.2),
@@ -460,6 +503,7 @@ class _LoginState extends State<Login> {
         ],
       ),
       child: TextField(
+        controller: emailcontroller,
         keyboardType: TextInputType.emailAddress,
         cursorColor: primaryColor,
         style: black18SemiBoldTextStyle,
@@ -522,6 +566,7 @@ class _LoginState extends State<Login> {
         ],
       ),
       child: TextField(
+        controller: passwordcontroller,
         obscureText: psw,
         cursorColor: primaryColor,
         style: black18SemiBoldTextStyle,
@@ -583,7 +628,7 @@ class _LoginState extends State<Login> {
             child: Icon(
               confirmPsw ? Icons.visibility : Icons.visibility_off,
               color: greyColor,
-              size: 15,
+              size: 13,
             ),
           ),
           hintText: 'Confirm Password',
@@ -600,13 +645,16 @@ class _LoginState extends State<Login> {
       children: [
         InkWell(
           borderRadius: BorderRadius.circular(5.0),
-          onTap: () => Navigator.push(
-            context,
-            PageTransition(
-              child: const Verification(),
-              type: PageTransitionType.rightToLeft,
-            ),
-          ),
+          // onTap: () => Navigator.push(
+          //   context,
+          //   PageTransition(
+          //     child: const Verification(),
+          //     type: PageTransitionType.rightToLeft,
+          //   ),
+          // ),
+          onTap: () => signup(),
+
+
           child: Container(
             width: MediaQuery.of(context).size.width - 120,
             padding: const EdgeInsets.all(fixPadding * 1.2),
